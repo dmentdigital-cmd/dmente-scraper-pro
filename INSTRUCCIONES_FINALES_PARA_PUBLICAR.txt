@@ -1,0 +1,266 @@
+═══════════════════════════════════════════════════════════════════════════════
+  🧠 DMENTE SCRAPER PRO v2.0
+  INSTRUCCIONES FINALES PARA PUBLICAR
+  "No es azar, es propósito"
+═══════════════════════════════════════════════════════════════════════════════
+
+📋 RESUMEN DE LO QUE YA ESTÁ HECHO
+
+✅ Contraseñas nuevas generadas en users.json
+✅ Archivo .env creado
+✅ Archivo .gitignore actualizado
+✅ Aplicación lista para publicar
+
+═══════════════════════════════════════════════════════════════════════════════
+
+🔐 TUS CREDENCIALES NUEVAS (GUARDAR EN LUGAR SEGURO)
+
+📧 Correo para GitHub: dmentdigital@gmail.com
+
+👤 USUARIO: admin
+🔒 CONTRASEÑA: Dmente2026!Admin@Secure
+   Rol: Administrador (acceso completo)
+
+👤 USUARIO: dmente
+🔒 CONTRASEÑA: Scraper2026!Operador@Pro
+   Rol: Operador (acceso limitado)
+
+═══════════════════════════════════════════════════════════════════════════════
+
+⏰ TIEMPO TOTAL: 30-40 MINUTOS
+
+📊 FLUJO EXACTO A SEGUIR:
+
+PASO 1 (5 min): Subir código a GitHub
+PASO 2 (10 min): Esperar deploy en Streamlit Cloud
+PASO 3 (10 min): Integrar en tu sitio web
+PASO 4 (5 min): Probar que funcione
+
+═══════════════════════════════════════════════════════════════════════════════
+
+🚀 INSTRUCCIONES PASO A PASO (SIN CÓDIGO)
+
+VER ARCHIVO: GUIA_STREAMLIT_VISUAL_SIN_CODIGO.md
+
+(Tiene imágenes ASCII y explicaciones para cada clic que debes dar)
+
+═══════════════════════════════════════════════════════════════════════════════
+
+📋 CHECKLIST DE EJECUCIÓN
+
+FASE 1: PREPARACIÓN (5 minutos)
+─────────────────────────────────────────────────────────────────────────────
+
+[ ] Abre navegador web
+
+[ ] Ve a GitHub.com y crea cuenta si no tienes
+    - Correo: dmentdigital@gmail.com
+    - Usuario: cualquier nombre único (ej: dmente-digital)
+    - Contraseña: fuerte y segura
+
+[ ] Crea nuevo repositorio en GitHub llamado: dmente-scraper-pro
+    - Descripción: Professional web scraping tool
+    - Selecciona: Public (importante para Streamlit)
+    - Selecciona: Add a README file
+
+
+FASE 2: SUBIR CÓDIGO (10 minutos)
+─────────────────────────────────────────────────────────────────────────────
+
+[ ] Abre Terminal/Cmd en tu computadora
+
+[ ] Navega a la carpeta webscraping-main:
+    cd "C:\Users\diego\Documents\DIEGOSAN\PROYECTO D MENTE DIGITAL\Estrategia Adquisicion Clientes Dmente Digital\AUTOMATIZACION CAPTURA DE LEADS\PLATZI WEB SCRAPPING\webscraping-main"
+
+[ ] Ejecuta estos comandos (copiar y pegar uno por uno):
+
+    git init
+    git add .
+    git commit -m "Dmente Scraper Pro v2.0 - Ready for production"
+    git branch -M main
+    git remote add origin https://github.com/TU_USUARIO/dmente-scraper-pro.git
+    git push -u origin main
+
+    (Reemplaza TU_USUARIO con tu nombre de usuario en GitHub)
+
+[ ] Espera a que termine (2-3 minutos)
+
+
+FASE 3: PUBLICAR EN STREAMLIT CLOUD (10 minutos)
+─────────────────────────────────────────────────────────────────────────────
+
+[ ] Abre navegador: https://share.streamlit.io/
+
+[ ] Da clic en "Sign up with GitHub"
+
+[ ] Autoriza Streamlit Cloud a acceder a tu GitHub
+
+[ ] Selecciona repositorio: dmente-scraper-pro
+
+[ ] Verifica datos:
+    Repository: TU_USUARIO/dmente-scraper-pro
+    Branch: main
+    Main file: app.py
+
+[ ] Da clic en "Deploy"
+
+[ ] ESPERA 2-3 MINUTOS mientras se instalan las dependencias
+    (Verás barra de progreso)
+
+[ ] Cuando termine, verás URL como:
+    https://dmentedigital-dmente-scraper-pro-XXXXX.streamlit.app
+
+[ ] COPIA ESTA URL y guárdala
+    (La necesitarás para integrar en tu sitio)
+
+[ ] Prueba login:
+    - Usuario: admin
+    - Contraseña: Dmente2026!Admin@Secure
+
+[ ] Verifica que la app funciona correctamente
+
+
+FASE 4: INTEGRAR EN TU SITIO WEB (10 minutos)
+─────────────────────────────────────────────────────────────────────────────
+
+OPCIÓN A: WordPress
+
+[ ] Ve a Pages → Add New Page
+[ ] Título: "Dmente Scraper Pro"
+[ ] En el editor, arriba a la derecha, da clic en 3 puntos (•••)
+[ ] Selecciona "Code Editor"
+[ ] Pega este código:
+
+<iframe
+    src="https://TU_URL_DE_STREAMLIT.streamlit.app"
+    width="100%"
+    height="900"
+    style="border: none;">
+</iframe>
+
+(Reemplaza TU_URL_DE_STREAMLIT con tu URL de Streamlit Cloud)
+
+[ ] Guarda y publica la página
+[ ] URL final: www.dmentedigital.co/herramientas/scraper
+
+
+OPCIÓN B: Wix, Squarespace o similar
+
+[ ] Abre editor de tu sitio
+[ ] Busca opción "Embed Code" o "Add Custom Code"
+[ ] Pega el código del iframe (arriba)
+[ ] Guarda y publica
+
+
+═══════════════════════════════════════════════════════════════════════════════
+
+✅ VERIFICACIÓN FINAL
+
+Después de completar todo:
+
+[ ] La app está en Streamlit Cloud (URL funcionando)
+[ ] La app está integrada en tu sitio web
+[ ] Login funciona con nuevas credenciales
+[ ] Puedes hacer un scraping de prueba
+[ ] Puedes descargar resultados (CSV, Excel, JSON)
+[ ] La página se ve profesional en móvil y desktop
+
+═══════════════════════════════════════════════════════════════════════════════
+
+📊 RESULTADO FINAL
+
+Tendrás tu aplicación profesional en:
+
+🌐 SITIO WEB: www.dmentedigital.co/herramientas/scraper
+☁️ STREAMLIT CLOUD: https://dmentedigital-dmente-scraper-pro-XXXXX.streamlit.app
+
+COSTO: $0
+USUARIOS: Ilimitados
+ALMACENAMIENTO: Gratis
+BANDANCHO: Gratis
+SSL/HTTPS: Automático
+
+═══════════════════════════════════════════════════════════════════════════════
+
+🎯 BENEFICIOS INMEDIATOS
+
+✓ Lead magnet gratuito en tu sitio
+✓ Demuestra capacidades técnicas
+✓ Empresas pueden probar sin riesgos
+✓ Diferenciación vs competencia
+✓ Genera tráfico orgánico (SEO)
+✓ Fácil compartir con clientes
+
+═══════════════════════════════════════════════════════════════════════════════
+
+🆘 PROBLEMAS COMUNES
+
+P: "¿Dónde abro Terminal/Cmd?"
+R: Windows: Presiona Win+R, escribe "cmd", Enter
+   Mac: Command+Space, escribe "Terminal", Enter
+   Linux: Ctrl+Alt+T
+
+P: "¿Cuál es mi usuario de GitHub?"
+R: El nombre que usaste al crear cuenta (visible en github.com/TU_USUARIO)
+
+P: "¿Cuánto cuesta Streamlit Cloud?"
+R: $0 - Es completamente gratis
+
+P: "¿Qué pasa si no tengo GitHub?"
+R: Crea una cuenta en github.com. Es gratis y toma 2 minutos.
+
+P: "¿Debo cambiar algo en el código?"
+R: NO. Todo está configurado. Solo tienes que subir y publicar.
+
+P: "¿Se necesita tarjeta de crédito?"
+R: NO. Streamlit Cloud y GitHub son 100% gratis.
+
+═══════════════════════════════════════════════════════════════════════════════
+
+📞 SOPORTE
+
+Si algo no funciona:
+
+1. Relee GUIA_STREAMLIT_VISUAL_SIN_CODIGO.md (paso a paso con imágenes)
+
+2. Verifica que:
+   - El archivo se llama exactamente: app.py
+   - El repositorio es: PUBLIC (no privado)
+   - El branch es: main
+
+3. Intenta de nuevo
+
+4. Si persiste, contacta a Dmente Digital
+
+═══════════════════════════════════════════════════════════════════════════════
+
+📁 ARCHIVOS EN TU CARPETA
+
+webscraping-main/
+├── app.py                                      (aplicación principal)
+├── requirements.txt                            (dependencias)
+├── users.json                                  (✅ ACTUALIZADO CON CONTRASEÑAS NUEVAS)
+├── .env                                        (✅ CREADO)
+├── .gitignore                                  (✅ ACTUALIZADO)
+├── GUIA_STREAMLIT_VISUAL_SIN_CODIGO.md        (LEE ESTO - PASO A PASO)
+├── INSTRUCCIONES_FINALES_PARA_PUBLICAR.txt    (ESTE ARCHIVO)
+├── engine/                                     (carpeta del motor)
+└── resultados/                                 (carpeta de datos)
+
+═══════════════════════════════════════════════════════════════════════════════
+
+✨ SIGUIENTE ACCIÓN
+
+1. ABRE: GUIA_STREAMLIT_VISUAL_SIN_CODIGO.md
+2. SIGUE los pasos exactos
+3. ¡LISTO! Tu app estará pública en 30 minutos
+
+═══════════════════════════════════════════════════════════════════════════════
+
+"No es azar, es propósito"
+
+Dmente Digital
+www.dmentedigital.co
+dmentdigital@gmail.com
+
+═══════════════════════════════════════════════════════════════════════════════

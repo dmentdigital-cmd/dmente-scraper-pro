@@ -1,0 +1,11 @@
+__pycache__/
+*.pyc
+*.pyo
+.git
+.gitignore
+*.ipynb
+chromedriver.exe
+.streamlit/secrets.toml
+venv/
+.env
+node_modules/
