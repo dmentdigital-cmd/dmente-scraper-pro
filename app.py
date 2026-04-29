@@ -39,12 +39,12 @@ USERS_FILE = os.path.join(os.path.dirname(__file__), "users.json")
 
 DEFAULT_USERS = {
     "admin": {
-        "password_hash": hashlib.sha256("DmenteDigital2026!".encode()).hexdigest(),
-        "name": "Administrador",
+        "password_hash": "0eb618c9e2378f5c465097a404c09cf49572248726a4c31d056e1d985960a14a",
+        "name": "Administrador Dmente",
         "role": "admin",
     },
     "dmente": {
-        "password_hash": hashlib.sha256("scraper2026".encode()).hexdigest(),
+        "password_hash": "214b68aa9a10d92646a85024ab3fad096fe032dfbcaded68259275d893a5aa91",
         "name": "Operador Dmente",
         "role": "user",
     },
