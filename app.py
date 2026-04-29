@@ -26,6 +26,19 @@ from engine.scraper import (
     get_json_download,
 )
 
+from lead_qualifier import (
+    SECTOR_TEMPLATES,
+    get_all_sectors,
+    get_sector_info,
+    qualify_leads,
+    get_sector_insights,
+)
+
+from flexible_lead_scraper import (
+    buscar_leads,
+    mapear_categoria_a_sector,
+)
+
 # ─── PAGE CONFIG ──────────────────────────────────────────────
 st.set_page_config(
     page_title="Dmente Scraper Pro",
@@ -843,10 +856,12 @@ def render_main_app():
     st.markdown("<br>", unsafe_allow_html=True)
 
     # ─── TABS ─────────────────────────────────────────────────
-    tab_console, tab_data, tab_download, tab_history = st.tabs([
+    tab_console, tab_data, tab_download, tab_search, tab_qualifier, tab_history = st.tabs([
         "🖥️ Consola de Estado",
         "📊 Tabla de Resultados",
         "💾 Descargar Datos",
+        "🔍 Búsqueda Flexible",
+        "🎯 Calificador de Leads",
         "📜 Historial",
     ])
 
@@ -1003,6 +1018,274 @@ def render_main_app():
                 </p>
             </div>""", unsafe_allow_html=True)
 
+    # TAB: Flexible Search
+    with tab_search:
+        st.markdown(
+            """<div class="glass-card">
+            <h3>🔍 Búsqueda Flexible de Leads Multi-Sector</h3>
+            <p>Busca cualquier categoría en cualquier ciudad y obtén leads calificados automáticamente</p>
+            </div>""",
+            unsafe_allow_html=True
+        )
+
+        col1, col2 = st.columns(2)
+
+        with col1:
+            ciudad = st.text_input(
+                "🏙️ Ciudad",
+                placeholder="Ej: Cartagena, Bogotá, Medellín",
+                value="Cartagena",
+                key="search_city"
+            )
+
+        with col2:
+            categoria = st.text_input(
+                "🏢 Categoría de Negocio",
+                placeholder="Ej: restaurante, odontología, médico, ferretería, óptica",
+                value="restaurante",
+                key="search_category"
+            )
+
+        col1, col2, col3 = st.columns(3)
+        with col1:
+            max_results = st.number_input("Máximo de resultados", value=20, min_value=5, max_value=100)
+        with col2:
+            usar_mock = st.checkbox("Usar datos de ejemplo (demo)", value=True)
+        with col3:
+            auto_qualify = st.checkbox("Calificar automáticamente", value=True)
+
+        st.markdown("---")
+
+        if st.button("🚀 Buscar y Extraer Leads", use_container_width=True, key="search_btn"):
+            if not ciudad or not categoria:
+                st.error("Por favor completa ciudad y categoría")
+            else:
+                add_log(f"🔍 Buscando {categoria} en {ciudad}...")
+
+                try:
+                    progress_bar = st.progress(0)
+                    progress_text = st.empty()
+
+                    def progress_callback(msg):
+                        progress_text.text(msg)
+
+                    # Obtener API key de Streamlit Secrets
+                    api_key = st.secrets.get("GOOGLE_PLACES_API_KEY", "") if not usar_mock else ""
+
+                    df_results, stats = buscar_leads(
+                        ciudad=ciudad,
+                        categoria=categoria,
+                        resultado_maximo=int(max_results),
+                        usar_mock=usar_mock,
+                        api_key=api_key,
+                        progress_callback=progress_callback
+                    )
+
+                    progress_bar.progress(50)
+
+                    if df_results.empty:
+                        add_log(f"⚠️ No se encontraron resultados para {categoria} en {ciudad}")
+                        st.warning("No se encontraron resultados")
+                    else:
+                        add_log(f"✅ Encontrados {len(df_results)} leads de {categoria} en {ciudad}")
+                        st.session_state.flexible_search_results = df_results
+                        st.session_state.search_stats = stats
+                        st.session_state.search_sector = mapear_categoria_a_sector(categoria)
+                        progress_bar.progress(100)
+
+                        if auto_qualify:
+                            add_log(f"🎯 Calificando {len(df_results)} leads...")
+                            try:
+                                sector = st.session_state.search_sector
+                                df_qualified = qualify_leads(df_results.to_dict('records'), sector)
+                                insights = get_sector_insights(df_qualified, sector)
+                                st.session_state.qualified_search_results = df_qualified
+                                st.session_state.search_insights = insights
+                                add_log(f"✅ Calificación completada: {insights['muy_calificados']} muy calificados")
+                            except Exception as e:
+                                add_log(f"⚠️ Error en calificación: {str(e)}")
+                                st.warning(f"Error al calificar: {str(e)}")
+
+                        st.rerun()
+
+                except Exception as e:
+                    add_log(f"❌ Error en búsqueda: {str(e)}")
+                    st.error(f"Error: {str(e)}")
+
+        if hasattr(st.session_state, "flexible_search_results"):
+            st.markdown("---")
+            stats = st.session_state.search_stats
+            df_results = st.session_state.flexible_search_results
+
+            col1, col2, col3 = st.columns(3)
+            with col1:
+                csv_data = df_results.to_csv(index=False)
+                archivo = f"leads_{ciudad}.csv"
+                st.download_button(
+                    label="📥 Descargar CSV (Raw)",
+                    data=csv_data,
+                    file_name=archivo,
+                    mime="text/csv",
+                    key="download_search_csv"
+                )
+
+            with col2:
+                st.markdown("*Excel disponible próximamente*")
+
+            with col3:
+                if hasattr(st.session_state, "qualified_search_results"):
+                    csv_qualified = st.session_state.qualified_search_results.to_csv(index=False)
+                    archivo_q = f"leads_calificados_{ciudad}.csv"
+                    st.download_button(
+                        label="📥 Descargar CSV (Calificados)",
+                        data=csv_qualified,
+                        file_name=archivo_q,
+                        mime="text/csv",
+                        key="download_search_qualified"
+                    )
+
+
+    # TAB: Lead Qualifier
+    with tab_qualifier:
+        st.markdown("""
+        <div class="glass-card">
+            <h3>🎯 Calificador Inteligente de Leads</h3>
+            <p>Transforma tus datos raspados en leads calificados para Dmente Digital</p>
+        </div>""", unsafe_allow_html=True)
+
+        if result and result.data:
+            col1, col2 = st.columns(2)
+
+            with col1:
+                st.markdown("##### 🏢 Selecciona el Sector")
+                sectors = get_all_sectors()
+                sector_labels = [get_sector_info(s)["nombre"] for s in sectors]
+                selected_sector_label = st.selectbox("Sector objetivo", sector_labels, key="sector_select")
+                selected_sector = sectors[sector_labels.index(selected_sector_label)]
+
+            with col2:
+                sector_info = get_sector_info(selected_sector)
+                st.markdown("##### 💡 Información del Sector")
+                st.write(f"**Presupuesto estimado:** {sector_info.get('presupuesto_estimado', 'N/A')}")
+                st.write(f"**Urgencia:** {sector_info.get('urgencia', 'N/A')}")
+
+            # Show sector keywords
+            with st.expander("🔑 Palabras clave del sector"):
+                keywords = sector_info.get("keywords", [])
+                st.markdown(f"Buscará empresas que coincidan con: {', '.join(keywords[:10])}...")
+
+            st.markdown("---")
+
+            # Qualify leads
+            if st.button("🚀 Calificar Leads para este Sector", use_container_width=True, key="qualify_btn"):
+                add_log(f"🎯 Calificando {len(result.data)} leads para sector: {sector_info['nombre']}")
+
+                try:
+                    # Qualify the leads
+                    df_qualified = qualify_leads(result.data, selected_sector)
+                    insights = get_sector_insights(df_qualified, selected_sector)
+
+                    # Store in session
+                    st.session_state.qualified_leads = df_qualified
+                    st.session_state.sector_insights = insights
+
+                    add_log(f"✅ Calificación completada: {insights['muy_calificados']} muy calificados, {insights['calificados']} calificados")
+                    st.rerun()
+
+                except Exception as e:
+                    add_log(f"❌ Error en calificación: {str(e)}")
+                    st.error(f"Error: {str(e)}")
+
+            st.markdown("<br>", unsafe_allow_html=True)
+
+            # Show results if available
+            if hasattr(st.session_state, 'qualified_leads') and st.session_state.qualified_leads is not None:
+                df_qualified = st.session_state.qualified_leads
+                insights = st.session_state.sector_insights
+
+                # Display insights
+                st.markdown("""
+                <div class="glass-card">
+                    <h3>📈 Resumen de Calificación</h3>
+                </div>""", unsafe_allow_html=True)
+
+                col1, col2, col3, col4 = st.columns(4)
+                with col1:
+                    st.metric("Total de Leads", insights['total_leads'])
+                with col2:
+                    st.metric("Muy Calificados", insights['muy_calificados'])
+                with col3:
+                    st.metric("Calificados", insights['calificados'])
+                with col4:
+                    st.metric("Puntuación Promedio", f"{insights['promedio_puntuacion']}/100")
+
+                st.markdown("---")
+
+                # Display servicios ideales
+                st.markdown("##### 💼 Servicios Ideales para este Sector")
+                for servicio in insights['servicios_ideales']:
+                    st.markdown(f"✓ {servicio}")
+
+                st.markdown("---")
+
+                # Display qualified leads table
+                st.markdown(f"""
+                <div class="glass-card">
+                    <h3>📋 Leads Calificados - {insights['muy_calificados'] + insights['calificados']} resultados</h3>
+                </div>""", unsafe_allow_html=True)
+
+                # Filter by qualification level
+                qual_filter = st.multiselect(
+                    "Filtrar por nivel",
+                    ["🔥 Muy Calificado", "✅ Calificado", "⚠️ Parcialmente Calificado", "❌ No Calificado"],
+                    default=["🔥 Muy Calificado", "✅ Calificado"],
+                    key="qual_filter"
+                )
+
+                filtered_df = df_qualified[df_qualified['nivel_calificacion'].isin(qual_filter)].copy()
+
+                if not filtered_df.empty:
+                    # Show top columns
+                    cols_to_show = st.multiselect(
+                        "Columnas a mostrar",
+                        options=filtered_df.columns.tolist(),
+                        default=['puntuacion', 'nivel_calificacion', 'sector'],
+                        key="qual_col_filter"
+                    )
+
+                    display_df = filtered_df[cols_to_show] if cols_to_show else filtered_df
+                    st.dataframe(display_df, use_container_width=True, height=400)
+
+                    # Export qualified leads
+                    st.markdown("---")
+                    st.markdown("##### 💾 Exportar Leads Calificados")
+
+                    col1, col2 = st.columns(2)
+                    with col1:
+                        csv_data = filtered_df.to_csv(index=False)
+                        st.download_button(
+                            "📥 Descargar CSV",
+                            csv_data,
+                            f"leads_calificados_{selected_sector}.csv",
+                            "text/csv",
+                            key="download_csv_qual"
+                        )
+                    with col2:
+                        st.markdown("*Excel disponible próximamente*")
+
+                else:
+                    st.info("No hay leads que coincidan con los filtros seleccionados")
+
+        else:
+            st.markdown("""
+            <div class="glass-card" style="text-align:center; padding:3rem;">
+                <div style="font-size:3rem; margin-bottom:1rem;">🎯</div>
+                <h3 style="color:rgba(248,250,252,0.5) !important;">Sin datos para calificar</h3>
+                <p style="color:rgba(248,250,252,0.3);">
+                    Primero ejecuta un scraping para obtener datos que luego podrás calificar como leads
+                </p>
+            </div>""", unsafe_allow_html=True)
+
     # TAB: History
     with tab_history:
         history = load_history()
@@ -1045,9 +1328,4 @@ def render_main_app():
 
 
 # ═══════════════════════════════════════════════════════════════
-#  ROUTER
-# ═══════════════════════════════════════════════════════════════
-if st.session_state.authenticated:
-    render_main_app()
-else:
-    render_login_page()
+#
