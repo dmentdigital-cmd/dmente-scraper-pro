@@ -1328,4 +1328,21 @@ def render_main_app():
 
 
 # ═══════════════════════════════════════════════════════════════
+# MAIN EXECUTION
+# ═══════════════════════════════════════════════════════════════
+
+if __name__ == "__main__":
+    # Initialize session state
+    initialize_session_state()
+
+    # Check authentication
+    if "authenticated" not in st.session_state:
+        st.session_state.authenticated = False
+
+    if not st.session_state.authenticated:
+        render_login_page()
+    else:
+        main()
+
+# ═══════════════════════════════════════════════════════════════
 #
